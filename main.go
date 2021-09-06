@@ -1,26 +1,10 @@
-package progressbar
+package main
 
 import (
-	"time"
+	progress "github.com/mr-joshcrane/progressbar/progress"
 )
 
-type ProgressBar struct {
-	started  time.Time
-	elapsed  int64
-	finished bool
-}
-
-func New() ProgressBar {
-	return ProgressBar{time.Now(), 0, false}
-}
-
-func (bar *ProgressBar) Stop() {
-	started := bar.started.Unix()
-	elapsed := time.Now().Unix() - started
-	bar.elapsed = elapsed
-	bar.finished = true
-}
-
-func (bar *ProgressBar) State() (started time.Time, elapsed int64, finished bool) {
-	return bar.started, bar. elapsed, bar.finished	
+func main() {
+	bar := progress.New(13)
+	bar.Start()
 }
