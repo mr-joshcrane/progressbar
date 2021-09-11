@@ -2,10 +2,10 @@ package progressbar_test
 
 import (
 	// "fmt"
-	"math/rand"
-	"time"
 	pb "github.com/mr-joshcrane/progressbar/progress"
+	"math/rand"
 	"testing"
+	"time"
 )
 
 func DoWork() int {

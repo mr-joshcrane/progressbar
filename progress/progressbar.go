@@ -1,14 +1,14 @@
 package progressbar
 
 import (
+	"bytes"
 	"fmt"
 	"io"
-	"bytes"
 )
 
 type ProgressBar struct {
 	percentDone int
-	buf 		bytes.Buffer
+	buf         bytes.Buffer
 }
 
 func New() ProgressBar {
@@ -16,10 +16,9 @@ func New() ProgressBar {
 	return ProgressBar{0, buf}
 }
 
-
 type Work func() int
 
-func (bar *ProgressBar ) Start(work Work) {
+func (bar *ProgressBar) Start(work Work) {
 	for bar.percentDone < 100 {
 		bar.percentDone += work()
 		fmt.Fprint(&bar.buf, fmt.Sprintf("\r%d percent done", bar.percentDone))
