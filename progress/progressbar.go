@@ -2,25 +2,43 @@ package progressbar
 
 import (
 	"fmt"
-	"time"
+	"io"
+	"bytes"
 )
 
 type ProgressBar struct {
-	seconds int
+	percentDone int
+	buf 		bytes.Buffer
 }
 
-func New(time int) ProgressBar {
-	return ProgressBar{time}
+func New() ProgressBar {
+	var buf bytes.Buffer
+	return ProgressBar{0, buf}
 }
 
-func (bar *ProgressBar) Start() {
-	for elapsed := 1; elapsed <= bar.seconds; elapsed++ {
-		time.Sleep(1 * time.Second)
-		done := percentage(elapsed, bar.seconds)
-		fmt.Printf(fmt.Sprintf("\r%d percent done", done))
+
+type Work func() int
+
+func (bar *ProgressBar ) Start(work Work) {
+	for bar.percentDone < 100 {
+		bar.percentDone += work()
+		fmt.Fprint(&bar.buf, fmt.Sprintf("\r%d percent done", bar.percentDone))
 	}
+	bar.percentDone = 100
 }
 
-func percentage(elapsed, seconds int) int {
-	return int(float64(elapsed)/float64(seconds) * 100)
+func (bar *ProgressBar) Render() error {
+	for bar.percentDone != 100 {
+		str, err := io.ReadAll(&bar.buf)
+		if err != nil {
+			return err
+		}
+		fmt.Print(string(str))
+	}
+	fmt.Println("\r100 percent done")
+	return nil
 }
+
+// func percentage(elapsed, seconds int) int {
+// 	return int(float64(elapsed)/float64(seconds) * 100)
+// }
